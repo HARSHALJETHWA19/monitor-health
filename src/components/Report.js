@@ -1,96 +1,42 @@
 // src/components/Report.js
 import React, { useEffect, useState } from 'react';
-import { Typography, Grid, Paper } from '@mui/material';
-import { Line } from 'react-chartjs-2';
-import axios from 'axios';
-import {
-  Chart as ChartJS,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { fetchReports } from '../api/api';
 
 const Report = () => {
-  const [uptimeData, setUptimeData] = useState([]);
-  const [responseTimeData, setResponseTimeData] = useState([]);
+  const [reports, setReports] = useState({ uptimeReport: [], alertReport: [] });
 
   useEffect(() => {
-    const fetchReportData = async () => {
+    const getReports = async () => {
       try {
-        const response = await axios.get('/api/reports');
-        setUptimeData(response.data.uptime);
-        setResponseTimeData(response.data.responseTime);
+        const data = await fetchReports();
+        setReports(data);
       } catch (error) {
-        console.error('Error fetching report data:', error);
+        console.error('Error fetching reports:', error);
       }
     };
 
-    fetchReportData();
+    getReports();
   }, []);
-
-  const uptimeChartData = {
-    labels: uptimeData.map((data) => data.date),
-    datasets: [
-      {
-        label: 'Uptime (%)',
-        data: uptimeData.map((data) => data.uptime),
-        fill: false,
-        backgroundColor: 'green',
-        borderColor: 'green',
-      },
-    ],
-  };
-
-  const responseTimeChartData = {
-    labels: responseTimeData.map((data) => data.date),
-    datasets: [
-      {
-        label: 'Response Time (ms)',
-        data: responseTimeData.map((data) => data.responseTime),
-        fill: false,
-        backgroundColor: 'blue',
-        borderColor: 'blue',
-      },
-    ],
-  };
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Reports
-      </Typography>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: '20px' }}>
-            <Typography variant="h6" gutterBottom>
-              Uptime Report
-            </Typography>
-            <Line data={uptimeChartData} />
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper style={{ padding: '20px' }}>
-            <Typography variant="h6" gutterBottom>
-              Response Time Report
-            </Typography>
-            <Line data={responseTimeChartData} />
-          </Paper>
-        </Grid>
-      </Grid>
+      <h1>Reports</h1>
+      <h2>Uptime Report</h2>
+      <ul>
+        {reports.uptimeReport.map(report => (
+          <li key={report.id}>
+            Monitor ID: {report.id} - Uptime: {report.uptime}
+          </li>
+        ))}
+      </ul>
+      <h2>Alert Report</h2>
+      <ul>
+        {reports.alertReport.map(report => (
+          <li key={report.id}>
+            Alert ID: {report.id} - Created At: {report.created_at}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

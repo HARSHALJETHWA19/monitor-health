@@ -1,48 +1,27 @@
 // src/components/Settings.js
-import React, { useState, useEffect } from 'react';
-import {
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Grid,
-  FormControlLabel,
-  Switch,
-} from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { fetchSettings, updateSettings } from '../api/api';
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    notificationEmail: '',
-    alertThreshold: 5,
-    autoResolve: false,
-  });
+  const [settings, setSettings] = useState({ alertThreshold: 5, autoResolve: true });
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const getSettings = async () => {
       try {
-        const response = await axios.get('/api/settings');
-        setSettings(response.data);
+        const data = await fetchSettings();
+        setSettings(data);
       } catch (error) {
         console.error('Error fetching settings:', error);
       }
     };
 
-    fetchSettings();
+    getSettings();
   }, []);
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
 
   const handleSave = async () => {
     try {
-      await axios.put('/api/settings', settings);
-      alert('Settings updated successfully!');
+      await updateSettings(settings);
+      alert('Settings updated successfully');
     } catch (error) {
       console.error('Error updating settings:', error);
     }
@@ -50,50 +29,24 @@ const Settings = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Settings
-      </Typography>
-      <Paper style={{ padding: '20px' }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              label="Notification Email"
-              name="notificationEmail"
-              value={settings.notificationEmail}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              label="Alert Threshold"
-              name="alertThreshold"
-              type="number"
-              value={settings.alertThreshold}
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.autoResolve}
-                  onChange={handleChange}
-                  name="autoResolve"
-                  color="primary"
-                />
-              }
-              label="Enable Auto-Resolve"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button variant="contained" color="primary" onClick={handleSave}>
-              Save Settings
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
+      <h1>Settings</h1>
+      <div>
+        <label>Alert Threshold:</label>
+        <input
+          type="number"
+          value={settings.alertThreshold}
+          onChange={(e) => setSettings({ ...settings, alertThreshold: e.target.value })}
+        />
+      </div>
+      <div>
+        <label>Auto Resolve:</label>
+        <input
+          type="checkbox"
+          checked={settings.autoResolve}
+          onChange={(e) => setSettings({ ...settings, autoResolve: e.target.checked })}
+        />
+      </div>
+      <button onClick={handleSave}>Save</button>
     </div>
   );
 };

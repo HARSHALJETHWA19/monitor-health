@@ -1,37 +1,28 @@
 // src/components/MonitorList.js
 import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
-  Button,
-  Paper,
-} from '@mui/material';
-import axios from 'axios';
+// import { fetchMonitors, deleteMonitor } from '../api';
+import {  fetchMonitors, deleteMonitor } from '../api/api';
 
 const MonitorList = () => {
   const [monitors, setMonitors] = useState([]);
 
   useEffect(() => {
-    const fetchMonitors = async () => {
+    const getMonitors = async () => {
       try {
-        const response = await axios.get('/api/monitors');
-        setMonitors(response.data);
+        const data = await fetchMonitors();
+        setMonitors(data);
       } catch (error) {
         console.error('Error fetching monitors:', error);
       }
     };
 
-    fetchMonitors();
+    getMonitors();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/monitors/${id}`);
-      setMonitors(monitors.filter((monitor) => monitor.id !== id));
+      await deleteMonitor(id);
+      setMonitors(monitors.filter(monitor => monitor.id !== id));
     } catch (error) {
       console.error('Error deleting monitor:', error);
     }
@@ -39,43 +30,15 @@ const MonitorList = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Monitored Websites
-      </Typography>
-      <Paper>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>URL</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Uptime</TableCell>
-              <TableCell>Response Time</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {monitors.map((monitor) => (
-              <TableRow key={monitor.id}>
-                <TableCell>{monitor.name}</TableCell>
-                <TableCell>{monitor.url}</TableCell>
-                <TableCell>{monitor.status}</TableCell>
-                <TableCell>{monitor.uptime}%</TableCell>
-                <TableCell>{monitor.responseTime} ms</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleDelete(monitor.id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+      <h1>Monitors</h1>
+      <ul>
+        {monitors.map(monitor => (
+          <li key={monitor.id}>
+            {monitor.name} - {monitor.url}
+            <button onClick={() => handleDelete(monitor.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
