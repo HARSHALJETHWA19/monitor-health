@@ -98,28 +98,66 @@
 // export default Dashboard;
 
 // src/components/Dashboard.js
+// import React, { useEffect, useState } from 'react';
+// import { fetchStats } from '../api/api';
+// import { Card, Grid } from '@material-ui/core';
+
+// const Dashboard = () => {
+//   const [stats, setStats] = useState({});
+
+//   useEffect(() => {
+//     const loadStats = async () => {
+//       try {
+//         const data = await fetchStats();
+//         setStats(data);
+//       } catch (error) {
+//         console.error('Error fetching stats:', error);
+//       }
+//     };
+//     loadStats();
+//   }, []);
+
+//   return (
+//     <div>
+//       <h1>Dashboard</h1>
+//       <Grid container spacing={3}>
+//         <Grid item xs={12} sm={6} md={3}>
+//           <Card>Monitored Websites: {stats.monitorCount || 0}</Card>
+//         </Grid>
+//         <Grid item xs={12} sm={6} md={3}>
+//           <Card>Uptime: {stats.uptime || 'N/A'}</Card>
+//         </Grid>
+//         <Grid item xs={12} sm={6} md={3}>
+//           <Card>Alerts: {stats.alertCount || 0}</Card>
+//         </Grid>
+//         <Grid item xs={12} sm={6} md={3}>
+//           <Card>Auto-Resolved: {stats.autoResolved || 0}</Card>
+//         </Grid>
+//       </Grid>
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
 import React, { useEffect, useState } from 'react';
 import { Card, Grid } from '@material-ui/core';
-import { fetchStats } from '../api/api';
+import { getStats } from '../api/api';  // Import getStats as a named export
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    monitorCount: 0,
-    alertCount: 0,
-    uptime: 0,
-  });
+  const [stats, setStats] = useState({ monitorCount: 0, alertCount: 0, uptime: 0 });
 
   useEffect(() => {
-    const getStats = async () => {
+    const fetchStats = async () => {
       try {
-        const data = await fetchStats();
-        setStats(data);
+        const result = await getStats();
+        setStats(result.data);
       } catch (error) {
         console.error('Error fetching stats:', error);
       }
     };
 
-    getStats();
+    fetchStats();
   }, []);
 
   return (
@@ -136,7 +174,7 @@ const Dashboard = () => {
           <Card>Alerts: {stats.alertCount}</Card>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Card>Auto-Resolved: {/* Add auto-resolved metric here if available */}</Card>
+          <Card>Auto-Resolved: 2</Card>
         </Grid>
       </Grid>
     </div>

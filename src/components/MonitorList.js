@@ -1,42 +1,23 @@
-// src/components/MonitorList.js
-import React, { useEffect, useState } from 'react';
-// import { fetchMonitors, deleteMonitor } from '../api';
-import {  fetchMonitors, deleteMonitor } from '../api/api';
+import React, { useState, useEffect } from 'react';
+import { getMonitors } from '../api/api';
 
 const MonitorList = () => {
   const [monitors, setMonitors] = useState([]);
 
   useEffect(() => {
-    const getMonitors = async () => {
-      try {
-        const data = await fetchMonitors();
-        setMonitors(data);
-      } catch (error) {
-        console.error('Error fetching monitors:', error);
-      }
-    };
-
-    getMonitors();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteMonitor(id);
-      setMonitors(monitors.filter(monitor => monitor.id !== id));
-    } catch (error) {
-      console.error('Error deleting monitor:', error);
+    async function fetchData() {
+      const data = await getMonitors();
+      setMonitors(data);
     }
-  };
+    fetchData();
+  }, []);
 
   return (
     <div>
-      <h1>Monitors</h1>
+      <h2>Monitors</h2>
       <ul>
         {monitors.map(monitor => (
-          <li key={monitor.id}>
-            {monitor.name} - {monitor.url}
-            <button onClick={() => handleDelete(monitor.id)}>Delete</button>
-          </li>
+          <li key={monitor.id}>{monitor.name} - {monitor.url}</li>
         ))}
       </ul>
     </div>

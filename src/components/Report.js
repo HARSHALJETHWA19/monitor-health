@@ -1,40 +1,34 @@
-// src/components/Report.js
-import React, { useEffect, useState } from 'react';
-import { fetchReports } from '../api/api';
+import React, { useState, useEffect } from 'react';
+import { getReports } from '../api/api';
 
 const Report = () => {
-  const [reports, setReports] = useState({ uptimeReport: [], alertReport: [] });
+  const [report, setReport] = useState({
+    uptimeReport: [],
+    alertReport: [],
+  });
 
   useEffect(() => {
-    const getReports = async () => {
-      try {
-        const data = await fetchReports();
-        setReports(data);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
-      }
-    };
-
-    getReports();
+    async function fetchData() {
+      const data = await getReports();
+      setReport(data);
+    }
+    fetchData();
   }, []);
 
   return (
     <div>
-      <h1>Reports</h1>
-      <h2>Uptime Report</h2>
+      <h2>Reports</h2>
+      <h3>Uptime Report</h3>
       <ul>
-        {reports.uptimeReport.map(report => (
-          <li key={report.id}>
-            Monitor ID: {report.id} - Uptime: {report.uptime}
-          </li>
+        {report.uptimeReport.map((item, index) => (
+          <li key={index}>Monitor {item.id}: {item.uptime}% uptime</li>
         ))}
       </ul>
-      <h2>Alert Report</h2>
+
+      <h3>Alert Report</h3>
       <ul>
-        {reports.alertReport.map(report => (
-          <li key={report.id}>
-            Alert ID: {report.id} - Created At: {report.created_at}
-          </li>
+        {report.alertReport.map((item, index) => (
+          <li key={index}>Alert {item.id}: Created at {item.created_at}</li>
         ))}
       </ul>
     </div>
