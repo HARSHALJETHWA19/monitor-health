@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getAlerts } from '../api/api';
+import './AlertList.css';  // Custom CSS for styling
 
 const AlertList = () => {
-  const [alerts, setAlerts] = useState([]);
+    const [alerts, setAlerts] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getAlerts();
-      setAlerts(data);
-    }
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchAlerts = async () => {
+            const data = await getAlerts();
+            setAlerts(data);
+        };
+        fetchAlerts();
+    }, []);
 
-  return (
-    <div>
-      <h2>Alerts</h2>
-      <ul>
-        {alerts.map(alert => (
-          <li key={alert.id}>{alert.message} - {alert.created_at}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div className="alert-list">
+            <h2>Alerts</h2>
+            <ul>
+                {alerts.map((alert) => (
+                    <li key={alert.id}>
+                        <h4>{alert.alert_type}</h4>
+                        <p>{alert.message}</p>
+                        <p>Resolved: {alert.resolved ? 'Yes' : 'No'}</p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export default AlertList;

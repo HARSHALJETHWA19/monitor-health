@@ -1,38 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getReports } from '../api/api';
+import './Report.css';  // Custom CSS for styling
 
 const Report = () => {
-  const [report, setReport] = useState({
-    uptimeReport: [],
-    alertReport: [],
-  });
+    const [reports, setReports] = useState({ uptimeReport: [], alertReport: [] });
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getReports();
-      setReport(data);
-    }
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchReports = async () => {
+            const data = await getReports();
+            setReports(data);
+        };
+        fetchReports();
+    }, []);
 
-  return (
-    <div>
-      <h2>Reports</h2>
-      <h3>Uptime Report</h3>
-      <ul>
-        {report.uptimeReport.map((item, index) => (
-          <li key={index}>Monitor {item.id}: {item.uptime}% uptime</li>
-        ))}
-      </ul>
-
-      <h3>Alert Report</h3>
-      <ul>
-        {report.alertReport.map((item, index) => (
-          <li key={index}>Alert {item.id}: Created at {item.created_at}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    return (
+        <div className="report">
+            <h2>Reports</h2>
+            <div className="report-section">
+                <h3>Uptime Report</h3>
+                <ul>
+                    {reports.uptimeReport.map((report) => (
+                        <li key={report.id}>
+                            <p>Monitor ID: {report.id}</p>
+                            <p>Uptime: {report.uptime}%</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div className="report-section">
+                <h3>Alert Report</h3>
+                <ul>
+                    {reports.alertReport.map((report) => (
+                        <li key={report.id}>
+                            <p>Alert ID: {report.id}</p>
+                            <p>Created At: {report.created_at}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
 };
 
 export default Report;

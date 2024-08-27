@@ -1,12 +1,36 @@
 // src/api.js
 import axios from 'axios';
 
-export const getStats = () => axios.get('/api/stats');
-export const getMonitors = () => axios.get('/api/monitors');
-export const getAlerts = () => axios.get('/api/alerts');
-export const getReports = () => axios.get('/api/reports');
-export const getSettings = () => axios.get('/api/settings');
-export const updateSettings = (settings) => axios.put('/api/settings', settings);
+export const getStats = async () => {
+    const response = await axios.get('/api/stats');
+    return response.data;
+};
+
+export const getMonitors = async () => {
+    const response = await axios.get('/api/monitors');
+    return response.data;
+};
+
+export const getAlerts = async () => {
+    const response = await axios.get('/api/alerts');
+    return response.data;
+};
+
+export const getReports = async () => {
+    const response = await axios.get('/api/reports');
+    return response.data;
+};
+
+export const getSettings = async () => {
+    const response = await axios.get('/api/settings');
+    return response.data;
+};
+
+export const updateSettings = async (settings) => {
+    const response = await axios.put('/api/settings', settings);
+    return response.data;
+};
+
 
 
 // const BASE_URL = 'http://localhost:5000/api';

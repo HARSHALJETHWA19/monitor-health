@@ -1,0 +1,40 @@
+.settings {
+    background: #272727;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.settings h2 {
+    margin-bottom: 20px;
+}
+
+.settings-item {
+    margin-bottom: 15px;
+}
+
+.settings-item label {
+    margin-right: 10px;
+}
+
+.settings-item input[type="number"],
+.settings-item input[type="checkbox"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+button {
+    background: #4a00e0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background: #8e2de2;
+}

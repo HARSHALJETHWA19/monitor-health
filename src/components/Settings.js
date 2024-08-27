@@ -1,60 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { getSettings, updateSettings } from '../api/api';
+import './Settings.css';  // Custom CSS for styling
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    alertThreshold: '',
-    autoResolve: false,
-  });
+    const [settings, setSettings] = useState({ alertThreshold: 5, autoResolve: true });
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await getSettings();
-      setSettings(data);
-    }
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const data = await getSettings();
+            setSettings(data);
+        };
+        fetchSettings();
+    }, []);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setSettings({
-      ...settings,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
+    const handleUpdate = async () => {
+        const updatedSettings = await updateSettings(settings);
+        setSettings(updatedSettings);
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await updateSettings(settings);
-    alert('Settings updated');
-  };
-
-  return (
-    <div>
-      <h2>Settings</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Alert Threshold (ms):</label>
-          <input
-            type="number"
-            name="alertThreshold"
-            value={settings.alertThreshold}
-            onChange={handleChange}
-          />
+    return (
+        <div className="settings">
+            <h2>Settings</h2>
+            <div className="settings-item">
+                <label>Alert Threshold</label>
+                <input
+                    type="number"
+                    value={settings.alertThreshold}
+                    onChange={(e) => setSettings({ ...settings, alertThreshold: e.target.value })}
+                />
+            </div>
+            <div className="settings-item">
+                <label>Auto Resolve</label>
+                <input
+                    type="checkbox"
+                    checked={settings.autoResolve}
+                    onChange={(e) => setSettings({ ...settings, autoResolve: e.target.checked })}
+                />
+            </div>
+            <button onClick={handleUpdate}>Update Settings</button>
         </div>
-        <div>
-          <label>Auto Resolve:</label>
-          <input
-            type="checkbox"
-            name="autoResolve"
-            checked={settings.autoResolve}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">Save Settings</button>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default Settings;
